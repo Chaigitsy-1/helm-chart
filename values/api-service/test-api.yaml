@@ -9,6 +9,10 @@ apiservice:
   affinity:
     key: helm-test
     value: testing
+  conf:
+    mountPath: "/data"
+    subPath: "/"
+    datacmap: test-api-env
   hpa:
     minReplicas: 1
     maxReplicas: 5
