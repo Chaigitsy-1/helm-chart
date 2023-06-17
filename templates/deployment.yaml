@@ -48,6 +48,23 @@ spec:
           limits:
             cpu: {{ .Values.apiservice.limits.cpu }}
             memory: {{ .Values.apiservice.limits.memory }}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 250m
+            memory: 64Mi
+      {{- if .Values.apiservice.conf }}
+        volumeMounts:
+        - name: {{ .Values.apiservice.name}}
+          mountPath: {{ .Values.apiservice.conf.mountPath }} # This should be your final destination
+          subPath: {{ .Values.apiservice.conf.subPath }} 
+      volumes:
+      - name: {{ .Values.apiservice.name}}  # To access this volume, this name must be used inside volumeMounts of the container
+        configMap:
+           name: {{ .Values.apiservice.conf.datacmap }}
+      {{- end}} 
         envFrom:
           {{- if .Values.apiservice.configmaps }}
           {{- range .Values.apiservice.configmaps }}
