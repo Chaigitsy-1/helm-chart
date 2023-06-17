@@ -6,6 +6,9 @@ apiservice:
   replicaCount: 1
   image: nginx
   version: 1.0.0
+  affinity:
+    key: helm-test
+    value: testing
   hpa:
     minReplicas: 1
     maxReplicas: 5
