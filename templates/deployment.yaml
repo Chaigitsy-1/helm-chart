@@ -65,6 +65,7 @@ spec:
         configMap:
            name: {{ .Values.apiservice.conf.datacmap }}
       {{- end}} 
+        {{- if or .Values.apiservice.configmaps .Values.apiservice.secrets }}
         envFrom:
           {{- if .Values.apiservice.configmaps }}
           {{- range .Values.apiservice.configmaps }}
@@ -78,3 +79,4 @@ spec:
               name: "{{ $root.Values.apiservice.name }}-{{ .name }}"
               {{- end }}
           {{- end}}
+        {{- end}}
