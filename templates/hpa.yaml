@@ -1,0 +1,31 @@
+{{ if .Values.apiservice.hpa }}
+{{ if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "26") }}
+apiVersion: autoscaling/v2
+{{ else }}
+apiVersion: autoscaling/v2alpha1
+{{ end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: "{{ .Values.apiservice.name }}-hpa-policy"
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: "{{ .Values.apiservice.name }}-deployment"
+  minReplicas: {{ .Values.apiservice.hpa.minReplicas }}
+  maxReplicas: {{ .Values.apiservice.hpa.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.apiservice.hpa.metrics.cpu.targetAverageUtilization }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.apiservice.hpa.metrics.memory.targetAverageUtilization }}
+{{ end }}

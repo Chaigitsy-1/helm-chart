@@ -1,0 +1,27 @@
+{{- $root :=. -}}
+{{- if .Values.configmap }}
+{{- range .Values.apiservice.configmaps }}
+{{- $outer := . -}}
+{{- range $root.Values.configmap }}
+{{- if eq .name $outer.name }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $root.Values.apiservice.name }}-{{ .name }}"
+  namespace: {{ $root.Values.namespace }}
+
+type: {{ .type }}
+data:
+  {{- range .vars }}
+  {{- if not (eq (typeOf .value) "string") }}
+  {{ .name }}: {{ .value | quote }}
+  {{- end }}
+  {{- if  (eq (typeOf .value) "string") }}
+  {{ .name }}: {{ .value }}
+  {{- end}}
+  {{- end}}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,38 @@
+apiservice:
+  name: test-nginx
+  labels:
+  - name: application
+    value: nginx
+  replicaCount: 1
+  image: nginx
+  version: 1.0.0
+  hpa:
+    minReplicas: 1
+    maxReplicas: 5
+    metrics:
+      cpu:
+        targetAverageUtilization: 50
+      memory:
+        targetAverageUtilization: 50
+  configmaps:
+    - name: test-api-env-vars
+    - name: test-api-env-vars-1
+  secrets:
+    - name: test-1-secret
+    - name: test-2-secret
+  requests:
+    cpu: 20m
+    memory: 100Mi
+  limits:
+    cpu: 30m
+    memory: 200Mi
+  podport: 80
+  serviceport: 80
+  path: /
+  liveliness:
+    type: 
+      http:
+        path: /
+        port: 80
+
+    

@@ -1,0 +1,52 @@
+{{- $root :=. -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{  .Values.apiservice.name }}-deployment"
+  labels:
+    {{- range .Values.apiservice.labels }}
+    {{ .name }}: {{ .value }}
+    {{- end }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.apiservice.replicaCount }}
+  selector:
+    matchLabels:
+      {{- range .Values.apiservice.labels }}
+      {{ .name }}: {{ .value }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- range .Values.apiservice.labels }}
+        {{ .name }}: {{ .value }}
+        {{- end }}
+    spec:
+      containers:
+      - name: "{{  .Values.apiservice.name }}"
+        image: "{{ .Values.apiservice.image }}:{{ .Chart.Version }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: defaultport
+          containerPort: {{ .Values.apiservice.podport}}
+        resources:
+          requests:
+            cpu: {{ .Values.apiservice.requests.cpu }}
+            memory: {{ .Values.apiservice.requests.memory }}
+          limits:
+            cpu: {{ .Values.apiservice.limits.cpu }}
+            memory: {{ .Values.apiservice.limits.memory }}
+        envFrom:
+          {{- if .Values.apiservice.configmaps }}
+          {{- range .Values.apiservice.configmaps }}
+          - configMapRef:
+              name: "{{ $root.Values.apiservice.name }}-{{ .name }}"
+              {{- end }}
+          {{- end}}
+          {{- if .Values.apiservice.secrets }}
+          {{- range .Values.apiservice.secrets }}
+          - secretRef:
+              name: "{{ $root.Values.apiservice.name }}-{{ .name }}"
+              {{- end }}
+          {{- end}}

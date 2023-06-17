@@ -1,0 +1,17 @@
+{{- $root :=. -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{  .Values.apiservice.name }}-service"
+  namespace: {{ .Values.namespace }} 
+spec:
+  type: ClusterIP
+  ports:
+  - name: http  
+    port: {{ .Values.apiservice.serviceport }}
+    targetPort: {{ .Values.apiservice.podport }}
+  selector:
+    {{- range .Values.apiservice.labels }}
+    {{ .name }}: {{ .value }}
+    {{- end }}
