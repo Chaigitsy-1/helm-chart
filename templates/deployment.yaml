@@ -23,6 +23,17 @@ spec:
         {{ .name }}: {{ .value }}
         {{- end }}
     spec:
+      {{ if .Values.apiservice.affinity }}
+      affinity:
+         nodeAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+             nodeSelectorTerms:
+             - matchExpressions:
+               - key: {{ .Values.apiservice.affinity.key }}
+                 operator: In
+                 values:
+                 - {{ .Values.apiservice.affinity.value }}
+      {{- end }}     
       containers:
       - name: "{{  .Values.apiservice.name }}"
         image: "{{ .Values.apiservice.image }}:{{ .Chart.Version }}"
