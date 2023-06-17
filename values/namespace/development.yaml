@@ -1,0 +1,33 @@
+namespace: development
+
+configmap:
+  - name: test-api-env-vars
+    vars:
+    - name: var1
+      value: "value1"
+    - name: var2
+      value: "value2"
+
+  - name: test-api-env-vars-1
+    vars:
+    - name: var3
+      value: "value1"
+    - name: var4
+      value: "value2"
+
+secret:
+  - name: test-1-secret
+    type: Opaque
+    vars:
+    - name: secret-name
+      value: bGFiYQo=
+    - name: secret-name2
+      value: cm9uZQo=
+  
+  - name: test-2-secret
+    type: Opaque
+    vars:
+    - name: secret-name3
+      value: bGFiYQo=
+    - name: secret-name4
+      value: cm9uZQo=
